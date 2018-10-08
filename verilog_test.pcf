@@ -2,3 +2,4 @@ set_io clk R9
 set_io led[0] C8
 set_io led[1] F7
 set_io led[2] K9
+set_io button_in D8
