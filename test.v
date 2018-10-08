@@ -13,7 +13,7 @@ module test();
 	 begin
 		$dumpfile("verilog_test.vcd");
 		$dumpvars(0, test);
-		for (int i = 0; i < 500; i++) begin
+		for (int i = 0; i < 50000; i++) begin
 		   clk = ~clk; #1;
 		end
 	 end

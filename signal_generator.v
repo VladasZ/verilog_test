@@ -1,12 +1,11 @@
-module signal_generator #(parameter DELAY = 2
+module signal_generator #(parameter DELAY = 2,
+						  parameter TIMER_SIZE = 31
 						)(input increment,
 						  output reg out = 0);
 
-   reg [7:0] counter = 0;
+   reg [TIMER_SIZE:0] counter = 0;
 
    wire trigger = counter == DELAY - 1;
-
-  // assign out = trigger;
 
    always @(negedge increment)
 	 out <= 0;
@@ -14,14 +13,11 @@ module signal_generator #(parameter DELAY = 2
    always @(posedge trigger)
 	 out <= 1;
 
-   always @(posedge increment) begin
-	 if (trigger) begin
-	  // out <= 1;
+   always @(posedge increment)
+	 if (trigger)
 	   counter <= 0;
-	 end else begin
+	 else
 	  counter <= counter + 1;
-	 end
-   end
 
 endmodule
    
