@@ -2,6 +2,7 @@
 *.bin
 *.blif
 *~
-*.vcdx
+*.vcd
 *#
 *.#
+*.out

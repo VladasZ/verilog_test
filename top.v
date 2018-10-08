@@ -8,10 +8,9 @@ module top(input 		clk,
    wire 				gen3_signal;
    
 
-   
-   signal_generator #(.DELAY(50000000)) gen1(clk, gen1_signal);
-   signal_generator #(.DELAY(50000000)) gen2(clk, gen2_signal);
-   signal_generator #(.DELAY(50000000)) gen3(clk, gen3_signal);
+   signal_generator #(.DELAY(5)) gen1(clk, gen1_signal);
+   signal_generator #(.DELAY(50)) gen2(clk, gen2_signal);
+   signal_generator #(.DELAY(500)) gen3(clk, gen3_signal);
  
    assign led[0] = gen1_signal;
    assign led[1] = gen2_signal;
