@@ -5,16 +5,23 @@
 module test();
 
    reg clk = 0;
-   reg button = 0;
+   wire transmission;
+   wire clock;
+   wire data;
    wire [2:0] led;
    
-   top top(clk, button, led);
+   top top(clk,
+		   transmission, 
+		   clock,
+		   data,
+		   led
+		   );
    
    initial
 	 begin
 		$dumpfile("verilog_test.vcd");
 		$dumpvars(0, test);
-		for (int i = 0; i < 1000; i++) begin
+		for (int i = 0; i < 1000000; i++) begin
 		   clk = ~clk; #1;
 		end
 	 end

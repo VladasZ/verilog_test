@@ -1,31 +1,37 @@
-`include "signal_generator.v"
-`include "switch.v"
+`include "serial_transmitter.v"
+`include "generators.v"
 
-module top(input 		clk,
-		   input 		button_in,
+module top(input  clk,
+		   output transmission,
+		   output clock,
+		   output data,
 		   output [2:0] led);
 
-   wire 				button = ~button_in;
+   wire 				every_second;
+   wire 				ten_per_second;				
+   wire 				every_second_switch;
 
-   wire 				gen1_signal;
-   wire 				gen2_signal;
-   wire 				gen3_signal;
+   reg [7:0] 			test_data = 0;
 
-   wire 				switch1_signal;
-   wire 				switch2_signal;
-   wire 				switch3_signal;
+   generators generators(.clk(clk),
+						 .every_second(every_second),
+						 .ten_per_second(ten_per_second));
+
+   switch every_second_switch_m(.trigger(every_second), 
+								.out(every_second_switch));
    
+   serial_transmitter serial_transmitter(.clk(ten_per_second),
+   										 .send(every_second),
+   										 .in_data(test_data),
+   										 .transmission(transmission),
+   										 .transmission_clock(clock),
+   										 .out_data(data));
    
-   switch switch1(gen1_signal, switch1_signal);
-   switch switch2(gen2_signal, switch2_signal);
-   switch switch3(gen3_signal, switch3_signal);
+   assign led[0] = 1;
+   assign led[1] = every_second_switch;
+   assign led[2] = 1;
 
-   signal_generator #(.DELAY(100000000)) gen1(clk, gen1_signal);
-   signal_generator #(.DELAY(10000000)) gen2(clk, gen2_signal);
-   signal_generator #(.DELAY(1000000)) gen3(clk, gen3_signal);
- 
-   assign led[0] = switch1_signal;
-   assign led[1] = switch2_signal;
-   assign led[2] = switch3_signal;
+   always @(posedge every_second)
+	 test_data = test_data + 1;
    
  endmodule
