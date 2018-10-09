@@ -1,12 +1,16 @@
 import os
 import sys
 sys.path.append('utils')
+sys.path.append('../utils')
 import Args
 import Shell
 
 project_name = "verilog_test"
 test_module = "test.v"
 top_module = "top.v"
+
+if os.path.exists("../build.py"):
+    os.chdir("..")
 
 def build():
     Shell.run_string("yosys -q -p \"synth_ice40 -blif " + project_name + ".blif\" " + top_module)

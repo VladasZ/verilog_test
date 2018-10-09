@@ -22,10 +22,8 @@ module serial_transmitter(input       clk,
 
    switch clock_switch(.trigger(switch_trigger), .out(transmission_clock));
 
-   always @(posedge send) begin
-	//  is_sending <= 1;
+   always @(posedge send)
 	  data_buffer <= in_data;
-   end
 
    always @(posedge clk) begin
 	  if (last_index) begin
