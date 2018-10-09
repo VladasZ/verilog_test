@@ -26,20 +26,20 @@ module top(input  clk,
 						 .transmitter_clock(transmitter_clock),
 						 .transmitter_output_clock(transmitter_output_clock));
 
-   // data_transmitter data_transmitter(.clk(transmitter_clock),
-   // 									 .serial_clk(transmitter_clock),
-   // 									 .send(ten_per_second),
-   // 									 .data(64'b1010101010101010101010101010101010101010101010101010101010101010),
-   // 									 //.busy(X),
-   // 									 .transmission(transmission),
-   // 									 .out_data(data));
+   data_transmitter data_transmitter(.clk(clk),
+   									 .serial_clk(transmitter_clock),
+   									 .send(every_second),
+   									 .data(64'b1110000011000000111000001111000011111000111111001111111011111111),
+   									 //.busy(X),
+   									 .transmission(transmission),
+   									 .out_data(data));
 
-   serial_transmitter serial_transmitter(.clk(clk),
-										 .transmission_clock(transmitter_clock),
-   										 .send(hundred_per_second),
-   										 .in_data(test_data),
-   										 .transmission(transmission),
-   										 .out_data(data));
+   // serial_transmitter serial_transmitter(.clk(clk),
+   // 										 .transmission_clock(transmitter_clock),
+   // 										 .send(hundred_per_second),
+   // 										 .in_data(test_data),
+   // 										 .transmission(transmission),
+   // 										 .out_data(data));
    
    assign led[0] = 1;
    assign led[1] = every_second_switch;
