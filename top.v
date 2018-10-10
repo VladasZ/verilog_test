@@ -33,15 +33,16 @@ module top(input  clk,
 						 .transmitter_clock(transmitter_clock),
 						 .transmitter_output_clock(transmitter_output_clock));
 
-   counter seconds_counter(.increment(every_us),
-   						   .trigger(every_second),
+   counter seconds_counter(.clk(clk),
+						   .increment(every_us),
+   						   .trigger(transmitter_clock),
    						   .out(us_in_second));
 
    data_transmitter data_transmitter(.clk(clk),
    									 .serial_clk(transmitter_clock),
    									 .send(every_second2),
-   									 .data(us_in_second),
    									 //.busy(X),
+   									 .data(us_in_second),
    									 .transmission(transmission),
    									 .out_data(data));
 
