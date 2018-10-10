@@ -1,5 +1,6 @@
 `include "transmission/data_transmitter.v"
 `include "generators.v"
+`include "counter.v"
 
 module top(input  clk,
 		   output transmission,
@@ -7,29 +8,39 @@ module top(input  clk,
 		   output data,
 		   output [2:0] led);
 
+   wire 				every_us;
    wire 				every_second;
+   wire 				every_second2;
    wire 				ten_per_second;				
-   wire 				hundred_per_second;				
+   wire 				hundred_per_second;			
 
    wire 				transmitter_clock;
    wire 				transmitter_output_clock;				
 
    wire 				every_second_switch;
 
+   wire [63:0] 			us_in_second;
+
    reg [7:0] 			test_data = 0;
 
    generators generators(.clk(clk),
+						 .every_us(every_us),
 						 .every_second(every_second),
+						 .every_second2(every_second2),
 						 .every_second_switch(every_second_switch),
 						 .ten_per_second(ten_per_second),
 						 .hundred_per_second(hundred_per_second),
 						 .transmitter_clock(transmitter_clock),
 						 .transmitter_output_clock(transmitter_output_clock));
 
+   counter seconds_counter(.increment(every_us),
+   						   .trigger(every_second),
+   						   .out(us_in_second));
+
    data_transmitter data_transmitter(.clk(clk),
    									 .serial_clk(transmitter_clock),
-   									 .send(every_second),
-   									 .data(64'b1110000011000000111000001111000011111000111111001111111011111111),
+   									 .send(every_second2),
+   									 .data(us_in_second),
    									 //.busy(X),
    									 .transmission(transmission),
    									 .out_data(data));
@@ -47,7 +58,7 @@ module top(input  clk,
 
    assign clock = transmitter_output_clock;
    
-   always @(posedge hundred_per_second)
+   always @(posedge every_second)
 	 test_data = test_data + 1;
    
  endmodule

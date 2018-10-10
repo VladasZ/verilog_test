@@ -1,14 +1,17 @@
-module signal_generator(input increment,
-						input trigger,
-						output reg [7:0] out = 0);
+module counter(input 			 increment,
+			   input 			 trigger,
+			   output reg [63:0] out = 0);
 
-   reg [7:0] counter = 0;
+   reg [63:0] counter = 0;
+   reg [63:0] prev_value = -1;
 
-   always @(posedge trigger)
-	 out = counter;
-   
    always @(posedge increment)
-	 counter = counter + 1;
+	 counter <= counter + 1;
 
+   always @(posedge trigger) begin
+	  prev_value <= counter;
+	  out <= counter - prev_value;
+   end
+  
 endmodule
    
