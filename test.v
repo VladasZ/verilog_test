@@ -11,11 +11,23 @@ module test();
    wire clock;
    wire data;
    wire [2:0] led;
+
+
+// module top(input        clk,
+// 		   input 		rst, //bottom
+// 		   input 		btn1,//top
+// 		   output [2:0] led,
+// 		   output 		transmission,
+// 		   output 		clock,
+// 		   output 		data);
    
    top top(clk,
 		   rst,
 		   btn1,
-		   led
+		   led,
+		   transmission,
+		   clock,
+		   data
 		   );
    
    initial

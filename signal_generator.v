@@ -2,22 +2,24 @@ module signal_generator #(parameter DELAY = 2,
 						  parameter TIMER_SIZE = 63
 						  )(input  clk,
 							input  rst,
-							output out);
+							output reg out);
 
-   reg [TIMER_SIZE:0] counter_d, counter_q;
+   reg [TIMER_SIZE:0] counter;
 
-   wire trigger = counter_q == DELAY - 1 && clk;
-
-   assign out = trigger;
-
-   always @(counter_q)
-	 counter_d <= counter_q + 1'b1;
-
-   always @(posedge clk)
-	 if (trigger || rst)
-	   counter_q <= 0;
-	 else
-	   counter_q <= counter_d;
-
+   always @(posedge clk) begin
+	  if (rst) begin
+		 counter <= 0;
+		 out <= 0;
+	  end else begin
+		 if (counter == DELAY) begin
+			out <= 1;
+			counter <= 0;
+		 end else begin
+			out <= 0;
+			counter = counter + 1;
+		 end
+	  end
+   end
+   
 endmodule
    

@@ -1,47 +1,47 @@
-
-`include "signal_generator.v"
-`include "switch.v"
+`include "constants.v"
+`include "interval_switch.v"
 
 `define MULTIPLIER 1
 
 module generators(input  clk,
 				  input  rst,
+				  output clk_ten,
+				  output clk_hundred,
+				  output clk_thousand,
 				  output every_us,
+				  output send_data,
 				  output every_second,
-				  output every_second2,
-				  output every_second_switch,
 				  output ten_per_second,
 				  output hundred_per_second,
-				  output transmitter_clock,
 				  output transmitter_output_clock);
 
+   wire 				 clk_ten_wire;
+   wire 				 clk_hundred_wire;
+   wire 				 clk_thousand_wire;
    wire 				 every_us_wire;
    wire 				 every_second_wire;
-   wire 				 every_second_wire2;
-   wire 				 every_second_switch_wire;
    wire 				 ten_per_second_wire;
    wire 				 hundred_per_second_wire;
-   
-   wire 				 transmitter_clock_wire;
-   wire 				 transmitter_output_clock_wire;
+   wire 				 send_data_wire;
 
-   signal_generator #(.DELAY(100       * `MULTIPLIER)) every_us_generator           (clk, rst, every_us_wire);
-   signal_generator #(.DELAY(100000000 * `MULTIPLIER)) every_second_generator       (clk, rst, every_second_wire);
-   signal_generator #(.DELAY(100000000 * `MULTIPLIER)) every_second_generator2      (clk, rst, every_second_wire2);
-   signal_generator #(.DELAY(1000000   * `MULTIPLIER)) ten_per_second_generator     (clk, rst, ten_per_second_wire);
-   signal_generator #(.DELAY(100000    * `MULTIPLIER)) hundred_per_second_generator (clk, rst, hundred_per_second_wire);
-   signal_generator #(.DELAY(1000      * `MULTIPLIER)) transmitter_clock_generator  (clk, rst, transmitter_clock_wire);
-
-   switch every_second_sww    (rst, every_second_wire,      every_second_switch_wire);
-   switch transmitter_cloc_sww(rst, transmitter_clock_wire, transmitter_output_clock_wire);
    
+   signal_generator #(.DELAY(10                 )) clk_ten_generator            (clk, rst, clk_ten_wire);
+   signal_generator #(.DELAY(100                )) clk_hundred_generator        (clk, rst, clk_hundred_wire);
+   signal_generator #(.DELAY(1000               )) clk_thousand_generator       (clk, rst, clk_thousand_wire);
+   signal_generator #(.DELAY(100                )) every_us_generator           (clk, rst, every_us_wire);
+   signal_generator #(.DELAY(`EVERY_SECOND_DELAY)) every_second_generator       (clk, rst, every_second_wire);
+   signal_generator #(.DELAY(1000000            )) ten_per_second_generator     (clk, rst, ten_per_second_wire);
+   signal_generator #(.DELAY(100000             )) hundred_per_second_generator (clk, rst, hundred_per_second_wire);
+   signal_generator #(.DELAY(`SEND_DATA_DELAY   )) send_data_generator          (clk, rst, send_data_wire);
+   
+   
+   assign send_data                 = send_data_wire;
+   assign clk_ten                   = clk_ten_wire;
+   assign clk_hundred               = clk_hundred_wire;
+   assign clk_thousand              = clk_thousand_wire;
    assign every_us                  = every_us_wire;
    assign every_second              = every_second_wire;
-   assign every_second2             = every_second_wire2;
-   assign every_second_switch       = every_second_switch_wire;
    assign ten_per_second            = ten_per_second_wire;
    assign hundred_per_second        = hundred_per_second_wire;
-   assign transmitter_clock         = transmitter_clock_wire;
-   assign transmitter_output_clock  = transmitter_output_clock_wire;
    
 endmodule

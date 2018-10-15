@@ -1,11 +1,16 @@
-module switch(input      rst,
-			  input 	 trigger,
-			  output reg out);
+module switch(input  clk,
+			  input  rst,
+			  input  trigger,
+			  output out);
 
-   always @(posedge trigger)
+   reg 				 out_reg;
+
+   assign out = out_reg;
+   
+   always @(posedge clk)
 	 if (rst)
-	   out <= 0;
-	 else
-	   out <= ~out;
+	   out_reg <= 0;
+	 else if (trigger)
+	   out_reg <= ~out_reg;
    
 endmodule
