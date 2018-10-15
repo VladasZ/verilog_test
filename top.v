@@ -12,42 +12,25 @@ module top(input        clk,
 		   output 		clock,
 		   output 		data);
 
-   wire 				every_us;
-   wire 				hundred_per_second;
-   wire 				clk_thousand;
-   wire 				every_second;
    wire 				transmitter_busy;
    wire 				transmitter_clk;
    wire 				transmitter_data;
-   wire 				transmission_active; 				
+   wire 				transmission_active; 				   
+
+   wire [63:0] 			counter_wire;
+
+   wire 				every_us;
+   signal_generator #(.DELAY(`EVERY_US_DELAY)) every_us_generator(clk, rst, every_us);
+
+   wire 				every_second;
+   signal_generator #(.DELAY(`EVERY_SECOND_DELAY)) every_second_generator(clk, rst, every_second);
    
-   generators generators(.clk(clk), .rst(rst),
-						 .every_us(every_us),
-						 .hundred_per_second(hundred_per_second),
-						 .clk_thousand(clk_thousand),
-						 .every_second(every_second)
-);
-
-
-
    
-   wire 				test_timer_increment;
-   signal_generator #(.DELAY(`EVERY_SECOND_DELAY / 100)) test_timer_increment_generator(clk, rst, test_timer_increment);
-
-   reg [63:0] 			test_timer;
-
-   always @(posedge clk) 
-	 if (test_timer_increment)
-	   test_timer <= test_timer + 1;
-	 else if (rst)
-	   test_timer <= 0;
-
+   counter counter(clk, rst, every_us, every_second, counter_wire);
+    
    data_transmitter data_transmitter(.clk(clk),
    									 .rst(rst),
-   								//	  .data(64'b1010101010101010101010101010101010101010101010101010101010101010),
-                                  //.data(64'b0000000000000000000000000000000000000000000000000000000000000000),
-                                   // .data(64'b1000000011000000111000001111000011111000111111001111111011111111),
-									 .data(test_timer),
+									 .data(counter_wire),
    									 .busy(transmitter_busy),
    									 .transmission(transmission_active),
    									 .out_data(transmitter_data),

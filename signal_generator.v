@@ -11,7 +11,7 @@ module signal_generator #(parameter DELAY = 2,
 		 counter <= 0;
 		 out <= 0;
 	  end else begin
-		 if (counter == DELAY) begin
+		 if (counter == DELAY - 1) begin
 			out <= 1;
 			counter <= 0;
 		 end else begin

@@ -10,11 +10,11 @@ module counter(input             clk,
 	  if (rst) begin
 		 out <= 0;
 		 counter <= 0;
-	  end else if (increment) begin
-		 counter = counter + 1;
 	  end else if (trigger) begin
 		 out <= counter;
 		 counter <= 0;
+	  end else if (increment) begin
+		 counter = counter + 1;
 	  end
    end
   
