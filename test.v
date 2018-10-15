@@ -7,6 +7,7 @@ module test();
    reg clk = 0;
    reg rst = 0;
    reg btn1 = 0;
+   reg vive_sensor = 0;
    wire transmission;
    wire clock;
    wire data;
@@ -16,14 +17,16 @@ module test();
 // module top(input        clk,
 // 		   input 		rst, //bottom
 // 		   input 		btn1,//top
+// 		   input 		vive_sensor,
 // 		   output [2:0] led,
 // 		   output 		transmission,
 // 		   output 		clock,
 // 		   output 		data);
-   
+
    top top(clk,
 		   rst,
 		   btn1,
+		   vive_sensor,
 		   led,
 		   transmission,
 		   clock,
@@ -43,3 +46,4 @@ module test();
 	 end
 
 endmodule
+

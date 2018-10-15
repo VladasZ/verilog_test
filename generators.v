@@ -1,5 +1,5 @@
 `include "constants.v"
-`include "interval_switch.v"
+`include "tools/interval_switch.v"
 
 `define MULTIPLIER 1
 

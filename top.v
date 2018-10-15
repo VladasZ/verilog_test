@@ -1,12 +1,14 @@
 
 `include "constants.v"
+`include "tools/edge_detector.v"
+`include "tools/counter.v"
 `include "transmission/data_transmitter.v"
 `include "generators.v"
-`include "counter.v"
 
 module top(input        clk,
 		   input 		rst, //bottom
 		   input 		btn1,//top
+		   input 		vive_sensor,
 		   output [2:0] led,
 		   output 		transmission,
 		   output 		clock,
@@ -24,9 +26,8 @@ module top(input        clk,
 
    wire 				every_second;
    signal_generator #(.DELAY(`EVERY_SECOND_DELAY)) every_second_generator(clk, rst, every_second);
-   
-   
-   counter counter(clk, rst, every_us, every_second, counter_wire);
+      
+   counter counter(clk, rst, every_us, vive_sensor, counter_wire);
     
    data_transmitter data_transmitter(.clk(clk),
    									 .rst(rst),
@@ -42,10 +43,21 @@ module top(input        clk,
    
    wire 				every_second_switch;
    interval_switch #(.DELAY(`EVERY_SECOND_DELAY)) every_second_switch_generator(clk, rst, every_second_switch);
+
+
+   wire 				edge_test_signal;
+
+   interval_switch #(.DELAY(100))  edge_test_signal_generator(clk, rst, edge_test_signal);
+
+   wire 				edge_detected;
+
+   edge_detector #(.FALL(0), .RISE(1)) edge_detector(clk, rst, edge_test_signal, edge_detected);
+
+
    
-   assign led[0] = transmitter_busy;    //bottom
+   assign led[0] = transmitter_busy; //bottom
    assign led[1] = every_second_switch; //top
-   assign led[2] = rst;                 //red
+   assign led[2] = rst;  //red
 
    
  endmodule

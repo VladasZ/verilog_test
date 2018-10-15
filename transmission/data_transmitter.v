@@ -1,5 +1,6 @@
 `include "constants.v"
 `include "transmission/serial_transmitter.v"
+`include "tools/interval_switch.v"
 
 module data_transmitter(input        clk,
 						input 		 rst,

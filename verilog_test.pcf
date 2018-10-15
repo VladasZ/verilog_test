@@ -7,3 +7,4 @@ set_io clock L7
 set_io data G5
 set_io btn1 P13
 set_io rst K11
+set_io vive_sensor B11
