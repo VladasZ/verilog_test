@@ -1,3 +1,7 @@
+
+`ifndef GLOBAL_CONSTANTS
+`define GLOBAL_CONSTANTS
+
 //`define SIMULATION
 
 `define EVERY_SECOND_DELAY 100000000
@@ -9,4 +13,7 @@
 `else
   `define TRANSMITTER_CLOCK_DELAY 1000
   `define SEND_DATA_DELAY `EVERY_SECOND_DELAY
+ `endif
+
 `endif
+

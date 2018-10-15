@@ -4,6 +4,9 @@
 `include "tools/counter.v"
 `include "transmission/data_transmitter.v"
 `include "generators.v"
+`include "vive/pulse_recognizer.v"
+`include "test/test_data_generator.v"
+
 
 module top(input        clk,
 		   input 		rst, //bottom
@@ -28,11 +31,19 @@ module top(input        clk,
    wire 				every_us;
    signal_generator #(.DELAY(`EVERY_SECOND_DELAY)) every_us_generator(clk, rst, every_us);
    
-   counter counter(clk, rst, edge_detected, every_us, counter_wire);
-    
+   counter counter(clk, rst, every_us, edge_detected, counter_wire);
+
+
+   wire [4:0] pulse_wire;
+
+   pulse_recognizer pulse_recognizer(counter_wire, pulse_wire);
+
+   wire [63:0] test_data;
+   test_data_generator test_data_generator(clk, rst, every_us, test_data);
+   
    data_transmitter data_transmitter(.clk(clk),
    									 .rst(rst),
-									 .data(counter_wire),
+									 .data(test_data),
    									 .busy(transmitter_busy),
    									 .transmission(transmission_active),
    									 .out_data(transmitter_data),
