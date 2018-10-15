@@ -2,7 +2,7 @@
 `include "constants.v"
 `include "transmission/data_transmitter.v"
 `include "generators.v"
-// `include "counter.v"
+`include "counter.v"
 
 module top(input        clk,
 		   input 		rst, //bottom
@@ -28,11 +28,26 @@ module top(input        clk,
 						 .every_second(every_second)
 );
 
+
+
+   
+   wire 				test_timer_increment;
+   signal_generator #(.DELAY(`EVERY_SECOND_DELAY / 100)) test_timer_increment_generator(clk, rst, test_timer_increment);
+
+   reg [63:0] 			test_timer;
+
+   always @(posedge clk) 
+	 if (test_timer_increment)
+	   test_timer <= test_timer + 1;
+	 else if (rst)
+	   test_timer <= 0;
+
    data_transmitter data_transmitter(.clk(clk),
    									 .rst(rst),
    								//	  .data(64'b1010101010101010101010101010101010101010101010101010101010101010),
                                   //.data(64'b0000000000000000000000000000000000000000000000000000000000000000),
-                                   .data(64'b1000000011000000111000001111000011111000111111001111111011111111),
+                                   // .data(64'b1000000011000000111000001111000011111000111111001111111011111111),
+									 .data(test_timer),
    									 .busy(transmitter_busy),
    									 .transmission(transmission_active),
    									 .out_data(transmitter_data),
@@ -49,5 +64,6 @@ module top(input        clk,
    assign led[1] = every_second_switch; //top
    assign led[2] = rst;                 //red
 
+   
  endmodule
 
