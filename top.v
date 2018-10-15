@@ -13,6 +13,10 @@ module top(input        clk,
 		   output 		transmission,
 		   output 		clock,
 		   output 		data);
+   
+
+   wire 				edge_detected;
+   
 
    wire 				transmitter_busy;
    wire 				transmitter_clk;
@@ -22,12 +26,9 @@ module top(input        clk,
    wire [63:0] 			counter_wire;
 
    wire 				every_us;
-   signal_generator #(.DELAY(`EVERY_US_DELAY)) every_us_generator(clk, rst, every_us);
-
-   wire 				every_second;
-   signal_generator #(.DELAY(`EVERY_SECOND_DELAY)) every_second_generator(clk, rst, every_second);
-      
-   counter counter(clk, rst, every_us, vive_sensor, counter_wire);
+   signal_generator #(.DELAY(`EVERY_SECOND_DELAY)) every_us_generator(clk, rst, every_us);
+   
+   counter counter(clk, rst, edge_detected, every_us, counter_wire);
     
    data_transmitter data_transmitter(.clk(clk),
    									 .rst(rst),
@@ -44,17 +45,8 @@ module top(input        clk,
    wire 				every_second_switch;
    interval_switch #(.DELAY(`EVERY_SECOND_DELAY)) every_second_switch_generator(clk, rst, every_second_switch);
 
+   edge_detector edge_detector(clk, rst, vive_sensor, edge_detected);
 
-   wire 				edge_test_signal;
-
-   interval_switch #(.DELAY(100))  edge_test_signal_generator(clk, rst, edge_test_signal);
-
-   wire 				edge_detected;
-
-   edge_detector #(.FALL(0), .RISE(1)) edge_detector(clk, rst, edge_test_signal, edge_detected);
-
-
-   
    assign led[0] = transmitter_busy; //bottom
    assign led[1] = every_second_switch; //top
    assign led[2] = rst;  //red
