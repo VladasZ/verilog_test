@@ -4,6 +4,7 @@
 
 module data_transmitter(input        clk,
 						input 		 rst,
+						input 		 send,
 						input [63:0] data,
 						output 		 busy,
 						output 		 transmission,
@@ -23,11 +24,9 @@ module data_transmitter(input        clk,
    wire 							 serial_transmitter_busy;
    wire 							 last_index = index == 7;
    wire 							 serial_clk;
-   wire 							 send;
    
    interval_switch #(.DELAY(`TRANSMITTER_CLOCK_DELAY)) transmitter_out_clock_generator(clk, rst, clock);
    signal_generator #(.DELAY(`TRANSMITTER_CLOCK_DELAY)) serial_generator(clk, rst, serial_clk);
-   signal_generator #(.DELAY(`SEND_DATA_DELAY)) send_generator(clk, rst, send);
    
    assign transmission = serial_transmitter_busy;
    assign busy = state == `SENDING || serial_transmitter_busy;

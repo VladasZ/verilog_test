@@ -4,7 +4,7 @@
 
 `include "vive/vive_constants.v"
 
-module pulse_recognizer (input [63:0] in,
+module pulse_recognizer (input     [`PULSE_DURATION_SIZE:0] in,
 						 output reg [`PULSE_TYPE_SIZE_OF:0] out);
 
    always @(*) begin

@@ -1,12 +1,13 @@
 
-`include "constants.v"
-`include "tools/edge_detector.v"
-`include "tools/counter.v"
-`include "transmission/data_transmitter.v"
-`include "generators.v"
-`include "vive/pulse_recognizer.v"
+`include "constants.v" 
+`include "generators.v" 
+`include "tools/edge_detector.v" 
+`include "tools/counter.v" 
+`include "tools/indexer.v"
 `include "test/test_data_generator.v"
-
+`include "vive/pulse_recognizer.v" 
+`include "vive/pulse_buffer.v"
+`include "transmission/data_transmitter.v" 
 
 module top(input        clk,
 		   input 		rst, //bottom
@@ -28,22 +29,37 @@ module top(input        clk,
 
    wire [63:0] 			counter_wire;
 
+   
    wire 				every_us;
    signal_generator #(.DELAY(`EVERY_SECOND_DELAY)) every_us_generator(clk, rst, every_us);
    
    counter counter(clk, rst, every_us, edge_detected, counter_wire);
-
-
-   wire [4:0] pulse_wire;
-
-   pulse_recognizer pulse_recognizer(counter_wire, pulse_wire);
-
-   wire [63:0] test_data;
-   test_data_generator test_data_generator(clk, rst, every_us, test_data);
    
-   data_transmitter data_transmitter(.clk(clk),
-   									 .rst(rst),
-									 .data(test_data),
+   wire 				test_pulse_signal;
+   signal_generator #(.DELAY(100)) test_pulse_signal_generator(clk, rst, test_pulse_signal);
+   
+   wire [`PULSE_DURATION_SIZE:0] test_pulse_duration;
+   test_data_generator test_data_generator(clk, rst, test_pulse_signal, test_pulse_duration);
+
+
+   wire [7:0] 					 index;
+   wire 						 last_index;
+   
+   indexer #(.SIZE(316)) indexer(clk, rst, test_pulse_signal, index, last_index);
+
+   
+   wire 						 buffer_ready_wire;
+   wire [63:0] 					 pulse_buffer_wire;
+   pulse_buffer pulse_buffer(.clk(clk), .rst(rst),
+							 .next(test_pulse_signal),
+							 .pulse(test_pulse_duration),
+							 .completed(buffer_ready_wire),
+							 .out(pulse_buffer_wire));
+
+   
+   data_transmitter data_transmitter(.clk(clk), .rst(rst),
+									 .send(buffer_ready_wire),
+									 .data(pulse_buffer_wire),
    									 .busy(transmitter_busy),
    									 .transmission(transmission_active),
    									 .out_data(transmitter_data),

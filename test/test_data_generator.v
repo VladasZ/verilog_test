@@ -1,12 +1,15 @@
-module test_data_generator(input         clk,
-						   input 		 rst,
-						   input 		 next,
-						   output [63:0] out);
 
-   reg [15:0] 								 data_buffer [20:0];
-   reg [8:0] 								 index;
+`include "vive/vive_constants.v"
 
-   wire 									 last_index = index == 16;
+module test_data_generator(input                           clk,
+						   input 						   rst,
+						   input 						   next,
+						   output [`PULSE_DURATION_SIZE:0] out);
+
+   reg [`PULSE_DURATION_SIZE:0] 						   data_buffer [15:0];
+   reg [8:0] 											   index;
+
+   wire 												   last_index = index == 16;
    
    assign out = data_buffer[index];
 
